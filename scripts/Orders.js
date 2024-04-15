@@ -1,33 +1,34 @@
-import { getWheels, getInteriors, getTechnologies, getPaints, getOrders } from "./database.js"
+import { getWheels, getInteriors, getTechnologies, getPaints, getOrders, completeOrder } from "./database.js"
 
 
-const paints = getPaints()
-const interiors = getInteriors()
-const techs = getTechnologies()
-const wheels = getWheels()
+const paints = await getPaints()
+const interiors = await getInteriors()
+const techs = await getTechnologies()
+const wheels = await getWheels()
 
-export const Orders = () => {
-    const orders = getOrders()
+document.addEventListener("click", (event) => {
+    const { name, id } = event.target;
+    if (name === "complete") {
+      completeOrder(id);
+    }
+  });
+export const Orders = async () => {
+    const orders = await getOrders()
 
     return `${
         orders.map(order => {
-            const paint = paints.find(p => p.id === order.paintId)
-            const technology = techs.find(t => t.id === order.technologyId)
-            const interior = interiors.find(i => i.id === order.interiorId)
-            const wheel = wheels.find(w => w.id === order.wheelId)
+           
 
             return `<section class="order">
-                ${paint.color} car with
-                ${wheel.style} wheels,
-                ${interior.material} interior,
-                and the ${technology.package}
+                ${order.paintColor.color} car with
+                ${order.wheels.style} wheels,
+                ${order.interior.material} interior,
+                and the ${order.technology.package}
                 for a total cost of
                 ${
-                    (paint.price + technology.price + interior.price + wheel.price).toLocaleString("en-US", {
-                        style: "currency",
-                        currency: "USD"
-                    })
+                    order.totalCost
                 }
+                <input type="button" name="complete" id="${order.id}" value="Complete">
             </section>`
         })
         .join("")

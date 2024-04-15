@@ -61,33 +61,54 @@ export const setTechnology = (id) => {
     // document.dispatchEvent(new CustomEvent("stateChanged"))
 }
 
-export const addCustomOrder = () => {
+export const addCustomOrder = async () => {
     const newOrder = {...database.orderBuilder}
-    newOrder.timestamp = new Date().toLocaleDateString("en-US")
-    newOrder.id = database.customOrders[database.customOrders.length - 1].id + 1
-    database.customOrders.push(newOrder)
+ await fetch("https://localhost:7270/orders/create", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newOrder)
+ })
 
     database.orderBuilder = {}
     document.dispatchEvent(new CustomEvent("stateChanged"))
 }
 
-export const getOrders = () => {
-    return [...database.customOrders]
+export const getOrders = async () => {
+    const res = await fetch("https://localhost:7270/orders");
+    const data = await res.json();
+    return data;
 }
 
-export const getWheels = () => {
-    return [...database.wheels]
+export const getWheels = async () => {
+    const res = await fetch(" https://localhost:7270/Wheels");
+    const data = await res.json();
+    return data;
 }
 
-export const getInteriors = () => {
-    return [...database.interiors]
+export const getInteriors = async () => {
+   const res = await fetch("https://localhost:7270/Interior");
+   const data = await res.json();
+   return data
 }
 
-export const getTechnologies = () => {
-    return [...database.technologies]
+export const getTechnologies = async () => {
+    const res = await fetch("https://localhost:7270/Technology");
+    const data = await res.json();
+    return data;
+  };
+
+export const getPaints = async () => {
+    const res = await fetch("https://localhost:7270/PaintColor");
+    const data = await res.json();
+    return data
 }
 
-export const getPaints = () => {
-    return [...database.paints]
-}
 
+export const completeOrder = async (orderId) => {
+    await fetch(`https://localhost:7270/orders/${orderId}/fulfill`, {
+      method: "POST",
+    });
+    document.dispatchEvent(new CustomEvent("stateChanged"));
+  };

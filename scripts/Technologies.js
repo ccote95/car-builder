@@ -6,18 +6,17 @@ document.addEventListener("change", clickEvent => {
     }
 })
 
-const techs = getTechnologies()
+const techs = await getTechnologies();
 
 export const Technologies = () => {
-    return `<h2>Technologies</h2>
+
+  return `<h2>Technologies</h2>
     <select id="tech">
         <option value="0">Select a technology package</option>
-        ${
-            techs.map(
-                (tech) => {
-                    return `<option value="${tech.id}">${tech.package}</option>`
-                }
-            ).join("")
-        }
-    </select>`
-}
+        ${techs
+          .map((tech) => {
+            return `<option value="${tech.id}">${tech.package}</option>`;
+          })
+          .join("")}
+    </select>`;
+};
